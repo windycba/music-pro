@@ -58,6 +58,9 @@ public class SongService {
                 songRepository.save(song);
             }
         }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
         return songRepository.findAll();
     }
 
@@ -70,6 +73,6 @@ public class SongService {
 
     private boolean isAudioFile(Path path) {
         String name = path.getFileName().toString().toLowerCase(Locale.ROOT);
-        return name.endsWith(".mp3") || name.endsWith(".flac");
+        return name.endsWith(".mp3") || name.endsWith(".flac") || name.endsWith(".wav") || name.endsWith(".ogg");
     }
 }

@@ -3,13 +3,13 @@ server:
 
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/music_station?useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://dresh.cn:3306/music_station?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     username: root
-    password: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: none
     open-in-view: false
-
 music:
-  scan-path: "/data/music"
+  scan-path: "D:/tempMusic2"

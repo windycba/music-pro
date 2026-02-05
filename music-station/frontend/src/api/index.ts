@@ -40,7 +40,7 @@ export const register = (username: string, password: string) =>
 
 export const fetchSongs = () => http.get<Result<SongDto[]>>('/api/songs')
 
-export const streamUrl = (id: number) => `http://localhost:8080/api/songs/${id}/stream`
+export const streamUrl = (id: number) => `/api/songs/${id}/stream`
 
 export const fetchPlaylists = () => http.get<Result<PlaylistDto[]>>('/api/playlists')
 

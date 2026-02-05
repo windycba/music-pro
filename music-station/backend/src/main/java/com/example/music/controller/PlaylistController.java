@@ -39,12 +39,12 @@ public class PlaylistController {
     }
 
     @GetMapping("/{playlistId}/songs")
-    public Result<List<PlaylistSongDto>> listSongs(@PathVariable Long playlistId) {
+    public Result<List<PlaylistSongDto>> listSongs(@PathVariable(name = "playlistId") Long playlistId) {
         return Result.ok(playlistService.getPlaylistSongs(playlistId));
     }
 
     @PostMapping("/{playlistId}/songs")
-    public Result<Void> addSong(@PathVariable Long playlistId, @RequestBody PlaylistSongRequest request) {
+    public Result<Void> addSong(@PathVariable(name = "playlistId") Long playlistId, @RequestBody PlaylistSongRequest request) {
         playlistService.addSong(playlistId, request.getSongId());
         return Result.ok(null);
     }

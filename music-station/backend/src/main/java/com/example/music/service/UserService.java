@@ -6,20 +6,18 @@ import com.example.music.dto.RegisterRequest;
 import com.example.music.entity.Role;
 import com.example.music.entity.User;
 import com.example.music.repository.UserRepository;
-import com.example.music.security.JwtUtil;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import com.example.music.security.Sha256Util;
+import com.example.music.security.TokenStore;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final JwtUtil jwtUtil;
+    private final TokenStore tokenStore;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
+    public UserService(UserRepository userRepository, TokenStore tokenStore) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtUtil = jwtUtil;
+        this.tokenStore = tokenStore;
     }
 
     public AuthResponse register(RegisterRequest request) {
@@ -28,20 +26,20 @@ public class UserService {
         });
         User user = new User();
         user.setUsername(request.getUsername());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setPassword(Sha256Util.sha256(request.getPassword()));
         user.setRole(Role.USER);
         userRepository.save(user);
-        String token = jwtUtil.generateToken(user.getUsername(), user.getRole());
+        String token = tokenStore.createToken(user.getUsername(), user.getRole());
         return new AuthResponse(token, user.getRole().name());
     }
 
     public AuthResponse login(LoginRequest request) {
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("用户不存在"));
-        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+        if (!user.getPassword().equals(Sha256Util.sha256(request.getPassword()))) {
             throw new IllegalArgumentException("密码错误");
         }
-        String token = jwtUtil.generateToken(user.getUsername(), user.getRole());
+        String token = tokenStore.createToken(user.getUsername(), user.getRole());
         return new AuthResponse(token, user.getRole().name());
     }
 }

@@ -31,6 +31,7 @@
               <el-table-column prop="album" label="专辑" />
               <el-table-column label="操作">
                 <template #default="scope">
+                  <el-button type="primary" @click="playSong(scope.row)">播放</el-button>
                   <el-button type="danger" @click="removeSong(scope.row.songId)">移除</el-button>
                 </template>
               </el-table-column>
@@ -63,6 +64,7 @@ import {
   SongDto,
   removePlaylistSong
 } from '../api'
+import { setCurrentSong } from '../store/player'
 
 const router = useRouter()
 const playlists = ref<PlaylistDto[]>([])
@@ -126,6 +128,18 @@ const removeSong = async (songId: number) => {
   if (data.success) {
     await loadPlaylistSongs()
   }
+}
+
+const playSong = (song: PlaylistSongDto) => {
+  setCurrentSong({
+    id: song.songId,
+    title: song.title,
+    artist: song.artist,
+    album: song.album,
+    duration: 0,
+    enabled: true
+  })
+  router.push('/player')
 }
 
 const goSongs = () => router.push('/songs')

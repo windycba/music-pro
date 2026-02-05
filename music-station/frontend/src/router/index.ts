@@ -3,6 +3,7 @@ import LoginView from '../views/LoginView.vue'
 import SongsView from '../views/SongsView.vue'
 import PlaylistsView from '../views/PlaylistsView.vue'
 import AdminView from '../views/AdminView.vue'
+import PlayerView from '../views/PlayerView.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -11,7 +12,8 @@ const router = createRouter({
     { path: '/login', component: LoginView },
     { path: '/songs', component: SongsView },
     { path: '/playlists', component: PlaylistsView },
-    { path: '/admin', component: AdminView }
+    { path: '/admin', component: AdminView },
+    { path: '/player', component: PlayerView }
   ]
 })
 

@@ -14,7 +14,7 @@
         <el-table-column prop="album" label="专辑" />
         <el-table-column label="播放">
           <template #default="scope">
-            <audio controls :src="streamUrl(scope.row.id)" />
+            <el-button type="primary" @click="playSong(scope.row)">播放</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -25,7 +25,8 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { fetchSongs, streamUrl, SongDto } from '../api'
+import { fetchSongs, SongDto } from '../api'
+import { setCurrentSong } from '../store/player'
 
 const router = useRouter()
 const songs = ref<SongDto[]>([])
@@ -40,6 +41,10 @@ const loadSongs = async () => {
 
 const goPlaylists = () => router.push('/playlists')
 const goAdmin = () => router.push('/admin')
+const playSong = (song: SongDto) => {
+  setCurrentSong(song)
+  router.push('/player')
+}
 const logout = () => {
   localStorage.clear()
   router.push('/login')

@@ -6,9 +6,9 @@ import com.example.music.dto.PlaylistSongDto;
 import com.example.music.dto.PlaylistSongRequest;
 import com.example.music.dto.Result;
 import com.example.music.service.PlaylistService;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,8 +21,8 @@ public class PlaylistController {
     }
 
     @GetMapping
-    public Result<List<PlaylistDto>> list(Authentication authentication) {
-        String username = authentication.getName();
+    public Result<List<PlaylistDto>> list(HttpServletRequest request) {
+        String username = String.valueOf(request.getAttribute("username"));
         List<PlaylistDto> playlists = playlistService.getPlaylists(username).stream()
                 .map(PlaylistDto::from)
                 .collect(Collectors.toList());
@@ -30,9 +30,9 @@ public class PlaylistController {
     }
 
     @PostMapping
-    public Result<PlaylistDto> create(Authentication authentication, @RequestBody PlaylistRequest request) {
-        String username = authentication.getName();
-        return Result.ok(PlaylistDto.from(playlistService.createPlaylist(username, request.getName())));
+    public Result<PlaylistDto> create(HttpServletRequest request, @RequestBody PlaylistRequest playlistRequest) {
+        String username = String.valueOf(request.getAttribute("username"));
+        return Result.ok(PlaylistDto.from(playlistService.createPlaylist(username, playlistRequest.getName())));
     }
 
     @GetMapping("/{playlistId}/songs")

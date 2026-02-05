@@ -11,9 +11,5 @@ spring:
       ddl-auto: none
     open-in-view: false
 
-jwt:
-  secret: "music-station-secret-key"
-  expiration-ms: 86400000
-
 music:
   scan-path: "/data/music"

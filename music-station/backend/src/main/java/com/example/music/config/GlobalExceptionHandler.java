@@ -13,6 +13,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public Result<Void> handleException(Exception ex) {
+        ex.printStackTrace();
         return Result.error("服务器错误");
     }
 }

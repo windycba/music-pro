@@ -1,27 +1,61 @@
 <template>
   <router-view />
-  <div v-if="showMiniPlayer" class="mini-player" @click="goPlayer">
-    <div class="info">
+  <div v-if="playerState.current" class="mini-player">
+    <div class="info" @click="goPlayer">
       <strong>{{ playerState.current?.title }}</strong>
       <span class="meta">{{ playerState.current?.artist }}</span>
     </div>
-    <el-button size="small" type="primary">播放中</el-button>
+    <div class="controls">
+      <el-button size="small" @click="togglePlay">
+        {{ playerState.playing ? '暂停' : '播放' }}
+      </el-button>
+    </div>
+    <audio
+      ref="audioRef"
+      class="audio"
+      controls
+      :src="currentSrc"
+      @play="setPlaying(true)"
+      @pause="setPlaying(false)"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { playerState } from './store/player'
+import { computed, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
+import { streamUrl } from './api'
+import { playerState, setPlaying } from './store/player'
 
-const route = useRoute()
 const router = useRouter()
+const audioRef = ref<HTMLAudioElement | null>(null)
 
-const showMiniPlayer = computed(() => playerState.current && route.path !== '/player')
+const currentSrc = computed(() =>
+  playerState.current ? streamUrl(playerState.current.id) : ''
+)
 
 const goPlayer = () => {
   router.push('/player')
 }
+
+const togglePlay = () => {
+  if (!audioRef.value) return
+  if (playerState.playing) {
+    audioRef.value.pause()
+  } else {
+    audioRef.value.play()
+  }
+}
+
+watch(
+  () => playerState.current,
+  () => {
+    if (audioRef.value) {
+      audioRef.value.load()
+      audioRef.value.play()
+    }
+  }
+)
 </script>
 
 <style scoped>
@@ -38,14 +72,21 @@ const goPlayer = () => {
   background: #ffffff;
   border-radius: 12px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-  cursor: pointer;
 }
 .info {
   display: flex;
   flex-direction: column;
+  cursor: pointer;
 }
 .meta {
   color: #888;
   font-size: 12px;
+}
+.controls {
+  display: flex;
+  align-items: center;
+}
+.audio {
+  width: 600px;
 }
 </style>

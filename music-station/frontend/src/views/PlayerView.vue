@@ -11,14 +11,7 @@
         <div v-if="playerState.current" class="info">
           <p class="title">{{ playerState.current.title }}</p>
           <p class="meta">{{ playerState.current.artist }} - {{ playerState.current.album }}</p>
-          <audio
-            ref="audioRef"
-            controls
-            autoplay
-            :src="streamUrl(playerState.current.id)"
-            @play="setPlaying(true)"
-            @pause="setPlaying(false)"
-          />
+          <el-alert type="info" show-icon title="播放由底部悬浮播放器控制" />
         </div>
         <div v-else class="empty">暂无播放歌曲，请在歌曲列表中选择。</div>
       </el-card>
@@ -27,25 +20,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { streamUrl } from '../api'
-import { playerState, setPlaying } from '../store/player'
+import { playerState } from '../store/player'
 
 const router = useRouter()
-const audioRef = ref<HTMLAudioElement | null>(null)
 
 const goSongs = () => router.push('/songs')
-
-watch(
-  () => playerState.current,
-  () => {
-    if (audioRef.value) {
-      audioRef.value.load()
-      audioRef.value.play()
-    }
-  }
-)
 </script>
 
 <style scoped>

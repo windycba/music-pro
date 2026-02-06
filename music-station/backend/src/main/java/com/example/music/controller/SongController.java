@@ -93,13 +93,13 @@ public class SongController {
     }
 
     private MediaType resolveMediaType(Path path) {
-//        String name = path.getFileName().toString().toLowerCase(Locale.ROOT);
-//        if (name.endsWith(".mp3")) {
-//            return MediaType.valueOf("audio/mpeg");
-//        }
-//        if (name.endsWith(".flac")) {
-//            return MediaType.valueOf("audio/flac");
-//        }
+        String name = path.getFileName().toString().toLowerCase(Locale.ROOT);
+        if (name.endsWith(".mp3")) {
+            return MediaType.valueOf("audio/mpeg");
+        }
+        if (name.endsWith(".flac")) {
+            return MediaType.valueOf("audio/flac");
+        }
         return MediaType.APPLICATION_OCTET_STREAM;
     }
 }

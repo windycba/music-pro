@@ -1,0 +1,37 @@
+CREATE DATABASE IF NOT EXISTS music_station DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE music_station;
+
+CREATE TABLE IF NOT EXISTS user (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(200) NOT NULL,
+    role VARCHAR(20) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS song (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(200) NOT NULL,
+    artist VARCHAR(200) NOT NULL,
+    album VARCHAR(200) NOT NULL,
+    file_path VARCHAR(500) NOT NULL UNIQUE,
+    duration INT NOT NULL,
+    enabled BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS playlist (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    name VARCHAR(200) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_playlist_user FOREIGN KEY (user_id) REFERENCES user(id)
+);
+
+CREATE TABLE IF NOT EXISTS playlist_song (
+    playlist_id BIGINT NOT NULL,
+    song_id BIGINT NOT NULL,
+    PRIMARY KEY (playlist_id, song_id),
+    CONSTRAINT fk_playlist_song_playlist FOREIGN KEY (playlist_id) REFERENCES playlist(id),
+    CONSTRAINT fk_playlist_song_song FOREIGN KEY (song_id) REFERENCES song(id)
+);
